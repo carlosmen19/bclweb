@@ -1,0 +1,78 @@
+
+    (function() {
+      var cdnOrigin = "https://cdn.shopify.com";
+      var scripts = ["https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/polyfills.BCqn6Ex5.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/app.ZrO9O0pb.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/page-OnePage.BhU0ZIEF.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/DeliveryMethodSelectorSection.DNG05-nE.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/useEditorShopPayNavigation.BWWeUS5l.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/VaultedPayment.BJ-3vhbb.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/LocalizationExtensionField.DcydL3y4.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/ShopPayOptInDisclaimer.BsUCLQHP.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/ShipmentBreakdown.BpdJcynY.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/MerchandiseModal.RUrAb1Qp.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/StackedMerchandisePreview.D71KYqYX.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/PayButtonSection.B6KM3NlC.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/component-ShopPayVerificationSwitch.uSbA6F6A.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/useSubscribeMessenger.BbeG6nDy.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/index.D8tHnraf.js"];
+      var styles = ["https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/assets/app.D5uPXcPS.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/assets/OnePage.PMX4OSBO.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/assets/DeliveryMethodSelectorSection.Cx21oFfE.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/assets/useEditorShopPayNavigation.DCOTvxC3.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/assets/VaultedPayment.OxMVm7u-.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/assets/StackedMerchandisePreview.CKAakmU8.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.es/assets/ShopPayVerificationSwitch.DW7NMDXG.css"];
+      var fontPreconnectUrls = ["https://fonts.shopifycdn.com"];
+      var fontPrefetchUrls = ["https://fonts.shopifycdn.com/source_sans_pro/sourcesanspro_n4.c85f91ea821d792887902daa9670754f7c64e25c.woff2?h1=ZmxvcmVzcGFyYXJlZ2Fsby5jb20&hmac=4eb6ae3094039576594a8d7214f62579f872cd4c816f0127e019e58dd181ae9f","https://fonts.shopifycdn.com/source_sans_pro/sourcesanspro_n6.91ba95a725d9bdfe4971390fba64eb8dfe38af4a.woff2?h1=ZmxvcmVzcGFyYXJlZ2Fsby5jb20&hmac=66fbc15928deed324ef89f5f47259d8ee04e8d2ff89d2632ffa4549a32d6224b"];
+      var imgPrefetchUrls = ["https://cdn.shopify.com/s/files/1/0098/0552/9135/files/negocios-aliados-flores-para-regalo-640-px_x320.png?v=1681084511"];
+
+      function preconnect(url, callback) {
+        var link = document.createElement('link');
+        link.rel = 'dns-prefetch preconnect';
+        link.href = url;
+        link.crossOrigin = '';
+        link.onload = link.onerror = callback;
+        document.head.appendChild(link);
+      }
+
+      function preconnectAssets() {
+        var resources = [cdnOrigin].concat(fontPreconnectUrls);
+        var index = 0;
+        (function next() {
+          var res = resources[index++];
+          if (res) preconnect(res, next);
+        })();
+      }
+
+      function prefetch(url, as, callback) {
+        var link = document.createElement('link');
+        if (link.relList.supports('prefetch')) {
+          link.rel = 'prefetch';
+          link.fetchPriority = 'low';
+          link.as = as;
+          if (as === 'font') link.type = 'font/woff2';
+          link.href = url;
+          link.crossOrigin = '';
+          link.onload = link.onerror = callback;
+          document.head.appendChild(link);
+        } else {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', url, true);
+          xhr.onloadend = callback;
+          xhr.send();
+        }
+      }
+
+      function prefetchAssets() {
+        var resources = [].concat(
+          scripts.map(function(url) { return [url, 'script']; }),
+          styles.map(function(url) { return [url, 'style']; }),
+          fontPrefetchUrls.map(function(url) { return [url, 'font']; }),
+          imgPrefetchUrls.map(function(url) { return [url, 'image']; })
+        );
+        var index = 0;
+        function run() {
+          var res = resources[index++];
+          if (res) prefetch(res[0], res[1], next);
+        }
+        var next = (self.requestIdleCallback || setTimeout).bind(self, run);
+        next();
+      }
+
+      function onLoaded() {
+        try {
+          if (parseFloat(navigator.connection.effectiveType) > 2 && !navigator.connection.saveData) {
+            preconnectAssets();
+            prefetchAssets();
+          }
+        } catch (e) {}
+      }
+
+      if (document.readyState === 'complete') {
+        onLoaded();
+      } else {
+        addEventListener('load', onLoaded);
+      }
+    })();
+  
